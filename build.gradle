@@ -159,6 +159,12 @@ task packagePluginManifest << {
         into 'build/distributions/'
         rename ('plugin.xml', "${plugin_name}-${version}.xml")
     }
+
+    // update the deployed manifest
+    copy {
+        from 'build/tmp/plugin.xml'
+        into 'deployed/'
+    }
 }
 packagePluginManifest.dependsOn packagePlugin
 
