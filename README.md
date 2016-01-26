@@ -10,6 +10,8 @@ The easiest way to do this is to simply edit the Sage.properties (when the serve
 sagex/plugin/pushbullet/apikey=ACCESS_TOKEN_FROM_ACCOUNT_TAB
 ```
 
+Take note to replace **ACCESS_TOKEN_FROM_ACCOUNT_TAB** with your actual PushBullet API KEY.
+
 If you do this **BEFORE** you install the plugin, then PushBullet will be configured.  You can then go into the Plugin Configuration options and turn on/off the messages that you want to receive.  Also, you can send a test message to verify that it is working.
 
 
