@@ -5,8 +5,8 @@
     <Description>Can send SageTV System Messages to your Desktop and Mobile Device.  Requires a PushBullet account.</Description>
     <Author>stuckless</Author>
     <CreationDate>2015.12.18</CreationDate>
-    <ModificationDate>2015.12.18</ModificationDate>
-    <Version>1.1</Version>
+    <ModificationDate>2017.07.22</ModificationDate>
+    <Version>1.2</Version>
     <ResourcePath>sagex.plugin.pushbullet</ResourcePath>
     <Webpage><![CDATA[https://github.com/stuckless/sagetv-phoenix-core]]></Webpage>
 
@@ -24,8 +24,8 @@
 
     <Package>
         <PackageType>JAR</PackageType>
-        <Location>https://dl.bintray.com/opensagetv/sagetv-plugins/sagex.plugin.pushbullet/sagex.plugin.pushbullet-1.1.zip</Location>
-        <MD5>6d8b013c777561651cebc6eb0e220446</MD5>
+        <Location>https://dl.bintray.com/opensagetv/sagetv-plugins/sagex.plugin.pushbullet/sagex.plugin.pushbullet-1.2.zip</Location>
+        <MD5>99addd815b1a7038de18e9854261258b</MD5>
     </Package>
 
     <ImplementationClass>sagex.plugin.pushbullet.PushBulletPlugin</ImplementationClass>

@@ -1,7 +1,9 @@
 package sagex.plugin.pushbullet;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import sage.SageTVPluginRegistry;
+import sage.TestUtils;
 import sage.msg.SystemMessage;
 import sage.plugin.PluginEventManager;
 import sagex.plugin.SageEvents;
@@ -12,12 +14,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 /**
  * Created by seans on 18/12/15.
  */
 public class PushBulletPluginTest {
+    @BeforeClass
+    public static void init() throws Throwable {
+        TestUtils.initializeSageTVForTesting();
+    }
 
     @Test
     public void testOnSystemMessage() throws Exception {
@@ -38,9 +46,20 @@ public class PushBulletPluginTest {
         verify(plugin, times(1)).sendMessage(any(JSONObject.class));
     }
 
-    private Object getApiKey() {
-        String key = System.getProperty("PUSHBUTTON_API",null);
-        if (key==null) throw new RuntimeException("set -DPUSHBUTTON_API=YOUR_API_KEY");
-        return key;
+    @Test
+    public void testMessageBody() {
+        SystemMessage msg = spy(new SystemMessage(1, 1, "Test Message", new Properties()));
+        doReturn(10).when(msg).getRepeatCount();
+
+        PushBulletPlugin plugin = spy(new PushBulletPlugin(mock(SageTVPluginRegistry.class)));
+        doReturn(10).when(plugin).getConfigIntValue(eq(PushBulletPlugin.PROP_REPEAT_MAX));
+        String val = plugin.formatMessageBody(msg);
+        assertTrue(val.contains("Repeats 10"));
+        System.out.println(val);
+
+        doReturn(9).when(msg).getRepeatCount();
+        val = plugin.formatMessageBody(msg);
+        assertEquals("Repeat Count 9", val.trim());
+        System.out.println(val);
     }
 }

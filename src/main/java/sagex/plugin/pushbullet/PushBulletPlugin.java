@@ -26,6 +26,7 @@ public class PushBulletPlugin extends AbstractPlugin {
     public static final String PROP_API_KEY = PROP_BASE + "apikey";
     public static final String PROP_ENABLE_ALL = PROP_BASE + "enableAll";
     public static final String PROP_TEST_SEND = PROP_BASE + "testSend";
+    public static final String PROP_REPEAT_MAX = PROP_BASE + "maxRepeatCount";
 
     public PushBulletPlugin(SageTVPluginRegistry registry) {
         super(registry);
@@ -36,6 +37,9 @@ public class PushBulletPlugin extends AbstractPlugin {
         super.start();
 
         addProperty(SageTVPlugin.CONFIG_TEXT, PROP_API_KEY, "", "API KEY", "PushBullet API Key");
+
+        addProperty(SageTVPlugin.CONFIG_INTEGER, PROP_REPEAT_MAX, "10", "Max Message Repeats", "Maximum # of message repeats that will be sent");
+
         addProperty(SageTVPlugin.CONFIG_BOOL, PROP_ENABLE_ALL, "false", "Enable All System Events", "If enabled, then ALL System Events will be pushed");
 
         int messages[] = new int[] {
@@ -145,9 +149,14 @@ public class PushBulletPlugin extends AbstractPlugin {
 
     boolean canSendNotification(SystemMessage msg) {
         if (msg==null) return false;
-        if (getConfigBoolValue(PROP_ENABLE_ALL)) return true;
         if (msg.getType() == Integer.MAX_VALUE) return true; // test message
-        return getConfigBoolValue(PROP_BASE + String.valueOf(msg.getType()));
+
+        // check if the message is enabled
+        if (getConfigBoolValue(PROP_ENABLE_ALL) || getConfigBoolValue(PROP_BASE + String.valueOf(msg.getType()))) {
+            // check the repeat count
+            return msg.getRepeatCount() <= getConfigIntValue(PROP_REPEAT_MAX);
+        }
+        return false;
     }
 
     String getApiKey() {
@@ -158,7 +167,11 @@ public class PushBulletPlugin extends AbstractPlugin {
         if (msg==null) return "";
         StringBuilder sb = new StringBuilder();
         if (msg.getRepeatCount()>1) {
-            sb.append("Repeat Count" + msg.getRepeatCount() + "\n");
+            if (msg.getRepeatCount() == getConfigIntValue(PROP_REPEAT_MAX)) {
+                sb.append("Repeats " + msg.getRepeatCount() + ".  There may be more repeats, but they will be ignored.\n");
+            } else {
+                sb.append("Repeat Count " + msg.getRepeatCount() + "\n");
+            }
         }
         if (msg.getMessageVarNames()!=null) {
             for (String s: msg.getMessageVarNames()) {
